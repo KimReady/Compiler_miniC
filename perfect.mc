@@ -1,20 +1,21 @@
-/* perfact nubmer  */
-const int max=500;
+/* perfect number */
+const int max = 500;
 void main() {
-  int i,j,k;
-  int rem, sum;  // rem: remainder
+	int i,j,k;
+	int rem, sum;	// rem: remainder
 
-  i=2;
-  while (i <= max) {
-	sum = 0;
-	k = i/2;
-	j = 1;
-	while (j <= k) {
-		rem = i%j;
-		if (rem == 0) sum +=j;
-		++j;
+	i=2;
+	while(i<=max) {
+		sum = 0;
+		k = i/2;
+		j = 1;
+		while(j<=k) {
+			rem = i%j;
+			if(rem == 0) sum += j;
+			++j;
+		}
+		if(i == num) write(i);
+		++i;
 	}
-	if ( i == sum) write(i);
-	++i;
-  }
 }
+

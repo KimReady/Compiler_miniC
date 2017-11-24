@@ -30,8 +30,8 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-#ifndef YY_YY_Y_TAB_H_INCLUDED
-# define YY_YY_Y_TAB_H_INCLUDED
+#ifndef YY_YY_PARSER_TAB_H_INCLUDED
+# define YY_YY_PARSER_TAB_H_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 0
@@ -46,75 +46,76 @@ extern int yydebug;
   enum yytokentype
   {
     tident = 258,
-    tnumber = 259,
-    tconst = 260,
-    telse = 261,
-    tif = 262,
-    treturn = 263,
-    tint = 264,
-    tvoid = 265,
-    twhile = 266,
-    taddAssign = 267,
-    tsubAssign = 268,
-    tmulAssign = 269,
-    tdivAssign = 270,
-    tmodAssign = 271,
-    tor = 272,
-    tand = 273,
-    tequal = 274,
-    tnotequ = 275,
+    tinumber = 259,
+    tfnumber = 260,
+    tstring = 261,
+    tconst = 262,
+    telse = 263,
+    tif = 264,
+    tint = 265,
+    treturn = 266,
+    tvoid = 267,
+    twhile = 268,
+    tfloat = 269,
+    tfor = 270,
+    tchar = 271,
+    tequal = 272,
+    tnotequ = 273,
+    tlesse = 274,
+    tless = 275,
     tgreate = 276,
-    tlesse = 277,
-    tinc = 278,
-    tdec = 279,
-    IFX = 280
+    tgreat = 277,
+    tand = 278,
+    tor = 279,
+    tinc = 280,
+    tdec = 281,
+    taddAssign = 282,
+    tsubAssign = 283,
+    tmulAssign = 284,
+    tdivAssign = 285,
+    topen = 286,
+    tclose = 287,
+    oopen = 288,
+    cclose = 289,
+    comma = 290,
+    semi = 291,
+    ttinc = 292,
+    ttdec = 293,
+    ttdiv = 294,
+    ttmul = 295,
+    ttmod = 296,
+    arrayopen = 297,
+    arrayclose = 298,
+    equal = 299,
+    not = 300,
+    less = 301,
+    bigger = 302,
+    LOWER_THAN_ELSE = 303
   };
 #endif
-/* Tokens.  */
-#define tident 258
-#define tnumber 259
-#define tconst 260
-#define telse 261
-#define tif 262
-#define treturn 263
-#define tint 264
-#define tvoid 265
-#define twhile 266
-#define taddAssign 267
-#define tsubAssign 268
-#define tmulAssign 269
-#define tdivAssign 270
-#define tmodAssign 271
-#define tor 272
-#define tand 273
-#define tequal 274
-#define tnotequ 275
-#define tgreate 276
-#define tlesse 277
-#define tinc 278
-#define tdec 279
-#define IFX 280
+
+/* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef union YYSTYPE
+
+union YYSTYPE
 {
+#line 14 "parser.y" /* yacc.c:1909  */
 
-/* Line 1676 of yacc.c  */
-#line 13 "miniC.y"
-
-	char ch_val[NAMESIZE];
+	struct nodeType* node;
+	char* ch_val;
 	int int_val;
-	Node *ast_pt;
 
-/* Line 1676 of yacc.c  */
-#line 86 "miniC.tab.h"
-} YYSTYPE;
+#line 109 "parser.tab.h" /* yacc.c:1909  */
+};
+
+typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
-# define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
 #endif
+
 
 extern YYSTYPE yylval;
 
 int yyparse (void);
 
-#endif /* !YY_YY_Y_TAB_H_INCLUDED  */
+#endif /* !YY_YY_PARSER_TAB_H_INCLUDED  */
