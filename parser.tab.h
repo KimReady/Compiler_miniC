@@ -103,9 +103,8 @@ union YYSTYPE
 
 	struct nodeType* node;
 	char* ch_val;
-	int int_val;
 
-#line 109 "parser.tab.h" /* yacc.c:1909  */
+#line 108 "parser.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;
