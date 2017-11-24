@@ -6,6 +6,7 @@ extern FILE* yyin;
 extern int yylex();
 extern int yylineno;
 extern char* yytext;
+extern int sp;
 void yyerror(char *msg);
 
 Node* root;
@@ -14,7 +15,6 @@ Node* root;
 %union {
 	struct nodeType* node;
 	char* ch_val;
-	int int_val;
 }
 
 %token <ch_val> tident tinumber tfnumber tstring
@@ -32,15 +32,16 @@ Node* root;
 %type <node> unary_exp postfix_exp opt_actual_param actual_param actual_param_list primary_exp
 %type <node> ident inumber fnumber string
 
+%left ttinc ttdec
+%left ttmul ttdiv
 %nonassoc LOWER_THAN_ELSE
 %nonassoc telse
 
 %%
-mini_c	:	translation_unit '\n'
+mini_c	:	translation_unit
 {
 	root = buildTree(PROGRAM, rightHandsLen[PROGRAM]);
 }
-			| '\n' { $$ = NULL; }
 			;
 translation_unit	:	external_dcl					{ rightHandsLen[PROGRAM]++;	}
 			|	translation_unit external_dcl			{ rightHandsLen[PROGRAM]++;	}
@@ -222,10 +223,10 @@ string			:	tstring				{ buildNode(STRING, $1);	};
 %%
 
 void yyerror(char* msg) {
-	printf("%d : %s %s\n", lineno, msg, yytext);
+	printf("%d : %s %d\n", lineno, msg, yytext[0]);
 }
 
-Node* parser(FILE* srcFile) {
+Node* parser(FILE* srcFile, FILE* astFile) {
 	yyin = srcFile;
 	do {
 		yyparse();
@@ -250,9 +251,9 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "could not open file\n");
 	yyin = srcFile;
 
-	fprintf(astFile, "   AST Result  \n");
+	fprintf(astFile, "   AST Result\n");
 	fprintf(astFile, " ==============\n");
-	root = parser(srcFile);
+	root = parser(srcFile, astFile);
 	printTree(root, 0, astFile);
 	fprintf(astFile, " ==============\n");
 	fprintf(astFile, "  End Prasing!\n");

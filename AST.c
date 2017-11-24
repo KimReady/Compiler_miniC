@@ -18,7 +18,7 @@ char *nodeName[] = {
 char *TokenToString(char *token)
 {
 	char *string;
-	string = (char*)malloc(strlen(token)+1);
+	string = (char*)calloc(1, strlen(token)+1);
 	strcpy(string, token);
 	return string;
 }

@@ -1,4 +1,5 @@
 %{
+#include <stdio.h>
 #include "parser.tab.h"
 #include "AST.h"
 int yywrap();
@@ -52,16 +53,16 @@ int yywrap();
 [1-9][0-9]*|0([0-7]+|(x|X)[0-9A-Fa-f]*)?	{ yylval.ch_val = TokenToString(yytext);	return(tinumber);}
 [0-9]+"."[0-9]+(e[+-]?[0-9]+)?				{ yylval.ch_val = TokenToString(yytext);	return(tfnumber);}
 \"([^"\n\\]|\\(.|\n))*\"						{ yylval.ch_val = TokenToString(yytext);	return(tstring); }
-"/*"([^*]|\*+[^*/])*\**"*/"			;
-"//".*								;
-[ \t]+						;
-\r		;
-\n		{lineno++; return (yytext[0]);}
-.	{return(yytext[0]);}
+"/*"([^*]|\*+[^*/])*\**"*/"			{printf("comment: %s\n", yytext);}
+"//".*								{printf("comment: %s\n", yytext);}
+[ \t\r\n]+						;
+.	{printf("%c\n", yytext[0]); return(yytext[0]);}
+\r		{printf("\\r\n");}
+\n		{lineno++; printf("newline %d\n", yytext[0]); return yytext[0];}
 %%
 
 int yywrap() {
-	return 0;
+	return 1;
 }
 
 
