@@ -2,10 +2,12 @@
 #include <stdio.h>
 #include <string.h>
 #include "AST.h"
+#include "Ucode.h"
 extern FILE* yyin;
 extern int yylex();
 extern int yylineno;
 extern char* yytext;
+extern Node* valueStack[STACK_SIZE];
 extern int sp;
 void yyerror(char *msg);
 
@@ -80,9 +82,9 @@ formal_param_list	:	param_dcl				{ rightHandsLen[FORMAL_PARA]++;	}
 			|	formal_param_list comma param_dcl		{ rightHandsLen[FORMAL_PARA]++;	}
 			;
 param_dcl		:	dcl_spec declarator			{ buildTree(PARAM_DCL, 2);	}
-					|	tvoid				{ buildTree(VOID_NODE, 0);	/*rightHandsLen[PARAM_DCL]++;*/}
+					|	tvoid				{ buildTree(VOID_NODE, 0);}
 			;
-compound_st		:	oopen opt_dcl_list opt_stat_list cclose	{ buildTree(COMPOUND_ST, 2);	}
+compound_st		:	oopen opt_dcl_list opt_stat_list cclose	{ buildTree(COMPOUND_ST, 2); }
 			;
 opt_dcl_list		:	declaration_list	{ buildTree(DCL_LIST, rightHandsLen[DCL_LIST]); rightHandsLen[COMPOUND_ST]++;}
 			|				{ buildTree(DCL_LIST, 0);			}
@@ -221,12 +223,11 @@ inumber			:	tinumber				{ buildNode(NUMBER, $1);	};
 fnumber			:	tfnumber				{ buildNode(NUMBER, $1);	};
 string			:	tstring				{ buildNode(STRING, $1);	};
 %%
-
 void yyerror(char* msg) {
 	printf("%d : %s %d\n", lineno, msg, yytext[0]);
 }
 
-Node* parser(FILE* srcFile, FILE* astFile) {
+Node* parser(FILE* srcFile) {
 	yyin = srcFile;
 	do {
 		yyparse();
@@ -238,28 +239,39 @@ Node* parser(FILE* srcFile, FILE* astFile) {
 int main(int argc, char *argv[])
 {
 	FILE* srcFile;
-	FILE* astFile;
-	char filename[100];
+	FILE* dstFile;
+	char ifileName[100];
+	char ofileName[100];
 	Node *root;
 
-	strcpy(filename, argv[1]);
+	if(argc != 3) {
+		printf("usage './execfile inputfile outputfile' format.\n");
+		return 1;
+	}
 
-	srcFile= fopen(filename, "r");
-	astFile = fopen("astFile.txt", "w");
+	if(argv[1] != NULL)
+		strcpy(ifileName, argv[1]);
+	if(argv[2] != NULL)
+		strcpy(ofileName, argv[2]);
 
-	if(!srcFile || !astFile)
+	srcFile= fopen(ifileName, "r");
+	dstFile = fopen(ofileName, "w");
+
+	if(!srcFile || !dstFile) {
 		fprintf(stderr, "could not open file\n");
-	yyin = srcFile;
+		perror("omygod:");
+		return 2;
+	}
 
-	fprintf(astFile, "   AST Result\n");
-	fprintf(astFile, " ==============\n");
-	root = parser(srcFile, astFile);
-	printTree(root, 0, astFile);
-	fprintf(astFile, " ==============\n");
-	fprintf(astFile, "  End Prasing!\n");
+	root = parser(srcFile);
 
+	fprintf(dstFile, " \tSymbol table!\n");
+	fprintf(dstFile, "num id \tvalue\n");
+	fprintf(dstFile, "======================\n");
+	codeGen(valueStack[sp], dstFile);
+	fprintf(dstFile, "======================\n");
 	fclose(srcFile);
-	fclose(astFile);
+	fclose(dstFile);
 
-	return 1;
+	return 0;
 }
